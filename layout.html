@@ -1,0 +1,76 @@
+<!-- layout/layout.html -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <title th:text="${pageTitle} ?: 'Field Data Uploader'">Field Data Uploader</title>
+
+  <!-- CoreUI -->
+  <link rel="stylesheet" th:href="@{/css/style.min.css}">
+  <!-- Simplebar -->
+  <link rel="stylesheet" th:href="@{/vendors/simplebar/css/simplebar.css}">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" th:href="@{/vendors/fontawesome/css/all.min.css}">
+  <!-- jquery-confirm -->
+  <link rel="stylesheet" th:href="@{/css/jquery-confirm.min.css}">
+  <!-- custom -->
+  <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+
+<body data-coreui-theme="light">
+  <div class="c-app d-flex min-vh-100">
+
+    <!-- Sidebar (ส่ง activeMenu เข้า fragment แบบ explicit) -->
+    <div th:replace="fragments/sidebar :: sidebar(activeMenu=${activeMenu})"></div>
+
+    <!-- Wrapper -->
+    <div class="wrapper d-flex flex-column flex-grow-1">
+
+      <!-- Header -->
+      <header class="header header-sticky mb-4 border-bottom"
+              th:replace="fragments/header :: header"></header>
+
+      <!-- Body -->
+      <div class="body flex-grow-1 px-3">
+        <main th:replace="~{__${content}__}"></main>
+      </div>
+
+      <!-- Footer -->
+      <footer class="footer border-top"
+              th:replace="fragments/footer :: footer"></footer>
+
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script th:src="@{/js/coreui.bundle.min.js}"></script>
+  <script th:src="@{/vendors/simplebar/js/simplebar.min.js}"></script>
+  <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+  <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+  <script th:src="@{/js/jquery-confirm.min.js}"></script>
+
+  <!-- Fix: ไม่ accordion + เปิด group ที่มี active เสมอ -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const navEl = document.querySelector('.sidebar-nav[data-coreui="navigation"]');
+      if (!navEl || !window.coreui) return;
+
+      // กันโดน init ซ้ำจากที่อื่น
+      const old = coreui.Navigation.getInstance(navEl);
+      if (old) old.dispose();
+
+      // เปิดได้หลายกลุ่ม (ไม่ปิดกลุ่มเดิม)
+      coreui.Navigation.getOrCreateInstance(navEl, { accordion: false });
+
+      // เปิดกลุ่มที่มี .active เสมอ (เช่น MASTER_CLIENT)
+      const active = navEl.querySelector('.nav-link.active');
+      if (active) {
+        const group = active.closest('.nav-group');
+        if (group) group.classList.add('show');
+      }
+    });
+  </script>
+</body>
+</html>
