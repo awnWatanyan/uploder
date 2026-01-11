@@ -1,0 +1,108 @@
+<!-- fragments/sidebar.html -->
+<div th:fragment="sidebar(activeMenu)" class="sidebar sidebar-fixed border-end" id="sidebar">
+
+  <div class="sidebar-header border-bottom bg-primary">
+    <div class="sidebar-brand text-white">Field Data Uploader</div>
+  </div>
+
+  <ul class="sidebar-nav"
+      data-coreui="navigation"
+      data-coreui-accordion="false"
+      data-simplebar>
+
+    <!-- Group: Main -->
+    <li class="nav-group"
+        th:classappend="${#strings.startsWith(activeMenu,'MAIN_')} ? ' show' : ''">
+      <a class="nav-link nav-group-toggle" href="#">
+        <i class="fa-solid fa-layer-group nav-icon text-primary"></i> Main
+      </a>
+
+      <ul class="nav-group-items">
+        <li class="nav-item">
+          <a class="nav-link"
+             th:href="@{/import-excel}"
+             th:classappend="${activeMenu=='MAIN_IMPORT'} ? ' active' : ''">
+            <span class="nav-icon"><i class="fa-solid fa-file-import"></i></span>
+            Import File
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link"
+             th:href="@{/customer-list}"
+             th:classappend="${activeMenu=='MAIN_CUSTOMERS'} ? ' active' : ''">
+            <span class="nav-icon"><i class="fa-solid fa-list"></i></span>
+            Customer Lists
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <!-- Group: Master -->
+    <li class="nav-group"
+        th:classappend="${#strings.startsWith(activeMenu,'MASTER_')} ? ' show' : ''">
+      <a class="nav-link nav-group-toggle" href="#">
+        <i class="fa-solid fa-database nav-icon text-primary"></i> Master
+      </a>
+
+      <ul class="nav-group-items">
+        <li class="nav-item">
+          <a class="nav-link"
+             th:href="@{/client}"
+             th:classappend="${activeMenu=='MASTER_CLIENT'} ? ' active' : ''">
+            <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+            Client
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <!-- Group: Report -->
+    <li class="nav-group"
+        th:classappend="${#strings.startsWith(activeMenu,'REPORT_')} ? ' show' : ''">
+      <a class="nav-link nav-group-toggle" href="#">
+        <i class="fa-solid fa-chart-column nav-icon text-primary"></i> Report
+      </a>
+
+      <ul class="nav-group-items">
+        <li class="nav-item">
+          <a class="nav-link"
+             th:href="@{/collect-result-report}"
+             th:classappend="${activeMenu=='REPORT_COLLECT'} ? ' active' : ''">
+            <span class="nav-icon"><i class="fa-solid fa-clipboard-check"></i></span>
+            Collect Result
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <!-- Group: Setting -->
+    <li class="nav-group"
+        th:classappend="${#strings.startsWith(activeMenu,'SETTING_')} ? ' show' : ''">
+      <a class="nav-link nav-group-toggle" href="#">
+        <i class="fa-solid fa-gear nav-icon text-primary"></i> Setting
+      </a>
+
+      <ul class="nav-group-items">
+        <li class="nav-item">
+          <a class="nav-link"
+             th:href="@{/users}"
+             th:classappend="${activeMenu=='SETTING_USER'} ? ' active' : ''">
+            <span class="nav-icon"><i class="fa-solid fa-user"></i></span>
+            User
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link"
+             th:href="@{/roles}"
+             th:classappend="${activeMenu=='SETTING_ROLE'} ? ' active' : ''">
+            <span class="nav-icon"><i class="fa-solid fa-shield-halved"></i></span>
+            Role
+          </a>
+        </li>
+      </ul>
+    </li>
+
+  </ul>
+</div>
