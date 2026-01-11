@@ -1,0 +1,441 @@
+<div th:fragment="content">
+
+  <div class="mb-4">
+    <h2 class="fw-bold mb-0">Clients</h2>
+  </div>
+
+  <!-- Search Card -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+      <h5 class="fw-semibold mb-3">Search</h5>
+
+      <form id="searchForm">
+        <div class="row g-3">
+
+          <div class="col-12 col-md-3">
+            <label class="form-label">Code</label>
+            <input id="qCode" name="code" type="text" class="form-control" placeholder="">
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="form-label">Service</label>
+            <input id="qService" name="service" type="text" class="form-control" placeholder="">
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="form-label">Name (Thai)</label>
+            <input id="qNameTh" name="nameTh" type="text" class="form-control" placeholder="">
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="form-label">Name (Eng)</label>
+            <input id="qNameEn" name="nameEn" type="text" class="form-control" placeholder="">
+          </div>
+
+        </div>
+
+        <div class="row mt-4">
+          <div class="col-12 d-flex justify-content-center gap-2">
+            <button type="submit" class="btn btn-primary px-4">
+              <i class="fa-solid fa-magnifying-glass me-2"></i>Search
+            </button>
+
+            <button type="button" id="btnClearSearch" class="btn btn-outline-secondary px-4">
+              <i class="fa-solid fa-rotate-left me-2"></i>Clear
+            </button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Table Card -->
+  <div class="card shadow-sm border-0">
+    <div class="card-body pb-0">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h5 class="fw-semibold mb-0">All Clients</h5>
+
+        <button class="btn btn-dark" type="button" data-coreui-toggle="modal" data-coreui-target="#modalAdd">
+          <i class="fa-solid fa-plus me-2"></i>Add Client
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body p-0 pt-3">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle mb-0" id="clientTable">
+          <thead class="table-light">
+            <tr>
+              <th style="min-width:120px;">Code</th>
+              <th style="min-width:140px;">Service</th>
+              <th style="min-width:220px;">Name (Thai)</th>
+              <th style="min-width:220px;">Name (Eng)</th>
+              <th style="min-width:140px;">Created by</th>
+              <th style="min-width:200px;">Created Date/Time</th>
+              <th style="min-width:140px;">Updated by</th>
+              <th style="min-width:200px;">Updated Date/Time</th>
+              <th class="text-center" style="min-width:140px;">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody id="clientTbody">
+            <!-- rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card-body pt-2">
+      <div class="text-muted">Total Rows: <span id="totalRows">0</span></div>
+    </div>
+  </div>
+
+  <!-- Add Modal -->
+  <div class="modal fade" id="modalAdd" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header">
+          <h5 class="modal-title fw-semibold">Add New Client</h5>
+          <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+
+          <div class="mb-3">
+            <label class="form-label">Code</label>
+            <input id="addCode" type="text" class="form-control" placeholder="e.g. C001" maxlength="20">
+            <div class="form-text">Code must be unique.</div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Service</label>
+            <input id="addService" type="text" class="form-control" placeholder="e.g. PRMF" maxlength="50">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Name (Thai)</label>
+            <input id="addNameTh" type="text" class="form-control" placeholder="ชื่อภาษาไทย" maxlength="200">
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label">Name (Eng)</label>
+            <input id="addNameEn" type="text" class="form-control" placeholder="English name" maxlength="200">
+          </div>
+
+          <div id="addError" class="alert alert-danger py-2 mt-3 d-none"></div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" type="button" data-coreui-dismiss="modal">Cancel</button>
+          <button id="btnAddConfirm" class="btn btn-dark" type="button">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="modalEdit" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header">
+          <h5 class="modal-title fw-semibold">Edit Client</h5>
+          <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Code</label>
+            <input id="editCode" type="text" class="form-control" readonly>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Service</label>
+            <input id="editService" type="text" class="form-control" maxlength="50">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Name (Thai)</label>
+            <input id="editNameTh" type="text" class="form-control" maxlength="200">
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label">Name (Eng)</label>
+            <input id="editNameEn" type="text" class="form-control" maxlength="200">
+          </div>
+
+          <div id="editError" class="alert alert-danger py-2 mt-3 d-none"></div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" type="button" data-coreui-dismiss="modal">Cancel</button>
+          <button id="btnEditConfirm" class="btn btn-dark" type="button">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirm Modal -->
+  <div class="modal fade" id="modalDelete" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header">
+          <h5 class="modal-title fw-semibold">Confirm Delete</h5>
+          <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-2">
+            Do you want to delete client <span class="fw-semibold" id="delCode"></span> ?
+          </div>
+          <div class="text-medium-emphasis" id="delName"></div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" type="button" data-coreui-dismiss="modal">Cancel</button>
+          <button id="btnDeleteConfirm" class="btn btn-danger" type="button">
+            <i class="fa-solid fa-trash me-2"></i>Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .btn-icon{
+      width: 38px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border-radius: .5rem;
+    }
+  </style>
+
+  <script>
+    // ===== Temp data (example) =====
+    // Date format: yyyy-MM-dd HH:mm:ss
+    const clients = [
+      { code: "C001", service: "PRMF", nameTh: "บริษัท เอ บี ซี", nameEn: "ABC Co.,Ltd.", createdBy: "admin", createdAt: "2026-01-02 10:11:12", updatedBy: "admin", updatedAt: "2026-01-02 10:11:12" },
+      { code: "C002", service: "LON",  nameTh: "คุณ เจน สมิธ",  nameEn: "Jane Smith",   createdBy: "admin", createdAt: "2026-01-01 09:05:30", updatedBy: "ops01", updatedAt: "2026-01-02 08:15:10" },
+      { code: "C003", service: "CAR",  nameTh: "คุณ บ๊อบ",      nameEn: "Bob Johnson",  createdBy: "ops01", createdAt: "2025-12-30 14:22:05", updatedBy: "ops01", updatedAt: "2025-12-31 16:40:00" },
+      { code: "C004", service: "PRMF", nameTh: "แอคมี",         nameEn: "ACME Co.,Ltd.",createdBy: "admin", createdAt: "2025-12-25 11:00:00", updatedBy: "admin", updatedAt: "2025-12-26 13:10:45" },
+      { code: "C005", service: "INS",  nameTh: "เอ็กซ์วายแซด",  nameEn: "XYZ Industries", createdBy: "ops02", createdAt: "2025-12-20 08:30:00", updatedBy: "ops02", updatedAt: "2025-12-20 08:30:00" },
+    ];
+
+    let filtered = [...clients];
+    let editingCode = null;
+    let deletingCode = null;
+
+    const $tbody = document.getElementById("clientTbody");
+    const $totalRows = document.getElementById("totalRows");
+
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function renderTable(){
+      $tbody.innerHTML = filtered.map(r => `
+        <tr data-code="${escapeHtml(r.code)}">
+          <td class="fw-semibold">${escapeHtml(r.code)}</td>
+          <td>${escapeHtml(r.service)}</td>
+          <td>${escapeHtml(r.nameTh)}</td>
+          <td>${escapeHtml(r.nameEn)}</td>
+          <td>${escapeHtml(r.createdBy)}</td>
+          <td>${escapeHtml(r.createdAt)}</td>
+          <td>${escapeHtml(r.updatedBy)}</td>
+          <td>${escapeHtml(r.updatedAt)}</td>
+          <td class="text-center">
+            <button class="btn btn-outline-secondary btn-icon me-2 btn-edit" type="button" title="Edit">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+            <button class="btn btn-danger btn-icon btn-delete" type="button" title="Delete">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `).join("");
+
+      $totalRows.textContent = String(filtered.length);
+    }
+
+    function applyFilter(){
+      const qCode    = (document.getElementById("qCode").value || "").trim().toLowerCase();
+      const qService = (document.getElementById("qService").value || "").trim().toLowerCase();
+      const qNameTh  = (document.getElementById("qNameTh").value || "").trim().toLowerCase();
+      const qNameEn  = (document.getElementById("qNameEn").value || "").trim().toLowerCase();
+
+      filtered = clients.filter(r => {
+        const okCode    = !qCode    || (r.code || "").toLowerCase().includes(qCode);
+        const okService = !qService || (r.service || "").toLowerCase().includes(qService);
+        const okNameTh  = !qNameTh  || (r.nameTh || "").toLowerCase().includes(qNameTh);
+        const okNameEn  = !qNameEn  || (r.nameEn || "").toLowerCase().includes(qNameEn);
+        return okCode && okService && okNameTh && okNameEn;
+      });
+
+      renderTable();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderTable();
+
+      // Search
+      document.getElementById("searchForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        applyFilter();
+      });
+
+      // Clear
+      document.getElementById("btnClearSearch").addEventListener("click", () => {
+        document.getElementById("qCode").value = "";
+        document.getElementById("qService").value = "";
+        document.getElementById("qNameTh").value = "";
+        document.getElementById("qNameEn").value = "";
+        filtered = [...clients];
+        renderTable();
+      });
+
+      // Table action delegation
+      $tbody.addEventListener("click", (e) => {
+        const tr = e.target.closest("tr");
+        if (!tr) return;
+
+        const code = tr.getAttribute("data-code");
+        const row = clients.find(x => x.code === code);
+        if (!row) return;
+
+        // Edit
+        if (e.target.closest(".btn-edit")) {
+          editingCode = code;
+
+          document.getElementById("editCode").value = row.code;
+          document.getElementById("editService").value = row.service || "";
+          document.getElementById("editNameTh").value = row.nameTh || "";
+          document.getElementById("editNameEn").value = row.nameEn || "";
+          hideError("editError");
+
+          coreui.Modal.getOrCreateInstance(document.getElementById("modalEdit")).show();
+        }
+
+        // Delete
+        if (e.target.closest(".btn-delete")) {
+          deletingCode = code;
+          document.getElementById("delCode").textContent = row.code;
+          document.getElementById("delName").textContent = `${row.nameTh || ""} / ${row.nameEn || ""}`;
+
+          coreui.Modal.getOrCreateInstance(document.getElementById("modalDelete")).show();
+        }
+      });
+
+      // Add confirm
+      document.getElementById("btnAddConfirm").addEventListener("click", () => {
+        const code    = (document.getElementById("addCode").value || "").trim();
+        const service = (document.getElementById("addService").value || "").trim();
+        const nameTh  = (document.getElementById("addNameTh").value || "").trim();
+        const nameEn  = (document.getElementById("addNameEn").value || "").trim();
+
+        if (!code || !service || !nameTh || !nameEn) {
+          showError("addError", "Please enter Code, Service, Name (Thai) and Name (Eng).");
+          return;
+        }
+        if (clients.some(x => (x.code || "").toLowerCase() === code.toLowerCase())) {
+          showError("addError", "Duplicate Code. Please use another Code.");
+          return;
+        }
+
+        const now = nowText();
+        clients.unshift({
+          code,
+          service,
+          nameTh,
+          nameEn,
+          createdBy: "admin",
+          createdAt: now,
+          updatedBy: "admin",
+          updatedAt: now
+        });
+
+        // reset + close
+        document.getElementById("addCode").value = "";
+        document.getElementById("addService").value = "";
+        document.getElementById("addNameTh").value = "";
+        document.getElementById("addNameEn").value = "";
+        hideError("addError");
+
+        filtered = [...clients];
+        renderTable();
+
+        coreui.Modal.getInstance(document.getElementById("modalAdd"))?.hide();
+      });
+
+      // Edit confirm
+      document.getElementById("btnEditConfirm").addEventListener("click", () => {
+        if (!editingCode) return;
+
+        const service = (document.getElementById("editService").value || "").trim();
+        const nameTh  = (document.getElementById("editNameTh").value || "").trim();
+        const nameEn  = (document.getElementById("editNameEn").value || "").trim();
+
+        if (!service || !nameTh || !nameEn) {
+          showError("editError", "Service, Name (Thai) and Name (Eng) are required.");
+          return;
+        }
+
+        const row = clients.find(x => x.code === editingCode);
+        if (!row) return;
+
+        row.service = service;
+        row.nameTh = nameTh;
+        row.nameEn = nameEn;
+        row.updatedBy = "admin";
+        row.updatedAt = nowText();
+
+        hideError("editError");
+        applyFilter(); // keep current filter
+        coreui.Modal.getInstance(document.getElementById("modalEdit"))?.hide();
+      });
+
+      // Delete confirm
+      document.getElementById("btnDeleteConfirm").addEventListener("click", () => {
+        if (!deletingCode) return;
+
+        const idx = clients.findIndex(x => x.code === deletingCode);
+        if (idx >= 0) clients.splice(idx, 1);
+
+        deletingCode = null;
+        applyFilter(); // keep current filter
+        coreui.Modal.getInstance(document.getElementById("modalDelete"))?.hide();
+      });
+    });
+
+    function showError(id, msg){
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.classList.remove("d-none");
+    }
+    function hideError(id){
+      const el = document.getElementById(id);
+      el.textContent = "";
+      el.classList.add("d-none");
+    }
+
+    function pad2(n){ return String(n).padStart(2, "0"); }
+    function nowText(){
+      const d = new Date();
+      const yyyy = d.getFullYear();
+      const MM = pad2(d.getMonth() + 1);
+      const dd = pad2(d.getDate());
+      const HH = pad2(d.getHours());
+      const mm = pad2(d.getMinutes());
+      const ss = pad2(d.getSeconds());
+      return `${yyyy}-${MM}-${dd} ${HH}:${mm}:${ss}`;
+    }
+  </script>
+
+</div>

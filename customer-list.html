@@ -1,0 +1,709 @@
+<div th:fragment="content">
+
+  <!-- ===================== Page Title ===================== -->
+  <div class="mb-4">
+    <h2 class="fw-bold">Customer Lists</h2>
+  </div>
+
+  <!-- ===================== Search Card ===================== -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+      <h5 class="fw-semibold mb-3">Search</h5>
+
+      <form id="searchForm" class="row g-3">
+
+        <!-- Row 1 -->
+        <div class="col-md-2">
+          <label class="form-label">Customer ID</label>
+          <input id="txtCustomerId" type="text" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Client</label>
+          <select id="ddlClient" class="form-select">
+            <option value="">-- All --</option>
+            <option value="PRMF">บริษัท พรอมิส (ประเทศไทย) จำกัด</option>
+            <option value="AMNF">บริษัท ไอร่า แอนด์ ไอฟุล จำกัด (มหาชน)</option>
+            <option value="KBAF">ธนาคารกสิกรไทย จำกัด มหาชน</option>
+            <option value="BMW1">บริษัท บีเอ็มดับเบิลยู ลิสซิ่ง (ประเทศไทย) จำกัด</option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Agreement No.</label>
+          <input id="txtAgreementNo" type="text" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Address</label>
+          <input id="txtAddress" type="text" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Created Date From</label>
+          <input id="dtCreatedFrom" type="date" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Created Date To</label>
+          <input id="dtCreatedTo" type="date" class="form-control">
+        </div>
+
+        <!-- Row 2 -->
+        <div class="col-md-2">
+          <label class="form-label">Customer Name</label>
+          <input id="txtCustName" type="text" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Survey Type</label>
+          <select id="ddlSurveyType" class="form-select">
+            <option value="">-- All --</option>
+            <option value="SUH">SUH : Survey at Home</option>
+            <option value="SUC">SUC : Survey at Company</option>
+            <option value="SUO">SUO : Survey at Other</option>
+            <option value="GMH">GMH : Get Money at Home</option>
+            <option value="GMC">GMC : Get Money at Company</option>
+            <option value="GMO">GMO : Get Money at Other</option>
+            <option value="GPH">GPH : Get Motorcycle at Home</option>
+            <option value="GPC">GPC : Get Motorcycle at Company</option>
+            <option value="GPO">GPO : Get Motorcycle at Other</option>
+            <option value="GDH">GDH : Get Document at Home</option>
+            <option value="GDC">GDC : Get Document at Company</option>
+            <option value="GDO">GDO : Get Document at Other</option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Job Status</label>
+          <select id="ddlJobStatus" class="form-select">
+            <option value="">-- All --</option>
+            <option value="1">Draft</option>
+            <option value="2">Sending</option>
+            <option value="4">Onprocess</option>
+            <option value="5">Send Pda</option>
+            <option value="6">Completed</option>
+            <option value="98">Mci Cancel</option>
+            <option value="99">Cancel</option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Zipcode</label>
+          <input id="txtZipcode" type="text" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Update Date From</label>
+          <input id="dtUpdateFrom" type="date" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Update Date To</label>
+          <input id="dtUpdateTo" type="date" class="form-control">
+        </div>
+
+        <!-- Buttons -->
+        <div class="col-12 d-flex align-items-center justify-content-between mt-2">
+          <div class="d-flex gap-2 mx-auto">
+            <button type="submit" class="btn btn-primary px-4">
+              <i class="fa-solid fa-magnifying-glass me-2"></i>Search
+            </button>
+            <button id="btnReset" type="button" class="btn btn-outline-secondary px-4">
+              <i class="fa-solid fa-rotate-left me-2"></i>Clear
+            </button>
+          </div>
+
+          <button id="btnExportTop" type="button" class="btn btn-info px-4" disabled>
+            <i class="fa-solid fa-file-excel me-2"></i>Export
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== Result Card ===================== -->
+  <div class="card shadow-sm border-0">
+
+    <div class="card-body pb-2 d-flex justify-content-between">
+      <button id="btnCancel" class="btn btn-danger" disabled>
+        <i class="fa-solid fa-ban me-2"></i>Cancel
+      </button>
+
+      <button id="btnResend" class="btn btn-warning" disabled>
+        <i class="fa-solid fa-paper-plane me-2"></i>Resend
+      </button>
+    </div>
+
+    <!-- ✅ Error box (debug ได้ทันที) -->
+    <div id="errorBox" class="card-body d-none">
+      <div class="alert alert-danger mb-0" id="errorText"></div>
+    </div>
+
+    <div id="emptyState" class="card-body text-center py-5 text-muted">
+      <i class="fa-regular fa-file-lines me-2"></i>No data
+    </div>
+
+    <div id="tableSection" class="d-none">
+      <div class="card-body p-0">
+        <div class="customer-table-scroll">
+          <table class="table table-bordered table-hover align-middle mb-0 customer-table" id="customerTable">
+            <thead class="table-light">
+              <tr>
+                <th class="col-check text-center sticky-col-1">
+                  <input id="chkAllLeft" class="form-check-input" type="checkbox" aria-label="Select all left">
+                </th>
+                <th class="col-custid sticky-col-2">Customer ID</th>
+                <th class="col-custname sticky-col-3">Customer Name</th>
+
+                <th class="col-status">Job Status</th>
+                <th class="col-appoint">Appointment Date</th>
+                <th class="col-survey">Survey Type</th>
+                <th class="col-client">Client Name</th>
+                <th class="col-os text-end">OS Balance</th>
+                <th class="col-agreement">Agreement No.</th>
+                <th class="col-created">Created Date</th>
+                <th class="col-updated">Updated Date</th>
+                <th class="col-result">Collector Result</th>
+                <th class="col-remark">Collector Remark</th>
+
+                <th class="col-check-last text-center sticky-col-right">
+                  <input id="chkAllRight" class="form-check-input" type="checkbox" aria-label="Select all right">
+                </th>
+              </tr>
+            </thead>
+
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card-body pt-2 text-muted">
+        Total Rows: <span id="totalRows">0</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===================== Cancel Confirm Modal (Bootstrap) ===================== -->
+  <div class="modal fade" id="cancelConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title">Confirm</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          Do you want to Cancel?
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+          <button type="button" class="btn btn-danger" id="btnConfirmCancel">Yes</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== Styles ===================== -->
+  <style>
+    .customer-table-scroll{
+      position: relative;
+      overflow: auto;
+      max-height: 65vh;
+      border-top: 1px solid rgba(0,0,0,.08);
+    }
+
+    .customer-table{
+      min-width: 1950px;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-bottom: 0;
+    }
+
+    .col-check{ width: 44px; min-width: 44px; }
+    .col-custid{ min-width: 150px; }
+    .col-custname{ min-width: 220px; }
+    .col-check-last{ width: 70px; min-width: 70px; }
+
+    .customer-table th,
+    .customer-table td{
+      border-right: 1px solid #dee2e6 !important;
+      border-bottom: 1px solid #dee2e6 !important;
+      background-clip: padding-box;
+      white-space: nowrap;
+    }
+    .customer-table tr > *:first-child{
+      border-left: 1px solid #dee2e6 !important;
+    }
+
+    .customer-table thead th{
+      border-top: 1px solid #dee2e6 !important;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: #f8f9fa;
+    }
+
+    /* sticky left */
+    .sticky-col-1{
+      position: sticky;
+      left: 0;
+      z-index: 6;
+      background: #fff;
+      box-shadow: 1px 0 0 #dee2e6;
+    }
+    .sticky-col-2{
+      position: sticky;
+      left: 44px;
+      z-index: 6;
+      background: #fff;
+      box-shadow: 1px 0 0 #dee2e6;
+    }
+    .sticky-col-3{
+      position: sticky;
+      left: calc(44px + 150px);
+      z-index: 6;
+      background: #fff;
+      box-shadow: 1px 0 0 #dee2e6;
+    }
+
+    .customer-table thead .sticky-col-1,
+    .customer-table thead .sticky-col-2,
+    .customer-table thead .sticky-col-3{
+      z-index: 7;
+      background: #f8f9fa;
+    }
+
+    /* sticky right */
+    .sticky-col-right{
+      position: sticky;
+      right: 0;
+      z-index: 6;
+      background: #fff;
+      box-shadow: -1px 0 0 #dee2e6;
+    }
+    .customer-table thead .sticky-col-right{
+      z-index: 7;
+      background: #f8f9fa;
+    }
+
+    tr.is-selected td{ background: #fff3cd !important; }
+    tr.is-selected td.sticky-col-1,
+    tr.is-selected td.sticky-col-2,
+    tr.is-selected td.sticky-col-3,
+    tr.is-selected td.sticky-col-right{
+      background: #fff3cd !important;
+    }
+
+    .job-badge{
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      padding: .45rem .7rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: .875rem;
+    }
+  </style>
+
+  <!-- ===================== Scripts ===================== -->
+  <script th:inline="javascript">
+    const API_SEARCH_URL = /*[[@{/customer-list/api/search}]]*/ '';
+
+    const STATUS_MAP = {
+      "1":  {text:"Draft",      cls:"bg-secondary text-white"},
+      "2":  {text:"Sending",    cls:"bg-primary text-white"},
+      "4":  {text:"Onprocess",  cls:"bg-warning text-dark"},
+      "5":  {text:"Send Pda",   cls:"bg-info text-dark"},
+      "6":  {text:"Completed",  cls:"bg-success text-white"},
+      "98": {text:"Mci Cancel", cls:"bg-warning text-dark"},
+      "99": {text:"Cancel",     cls:"bg-danger text-white"}
+    };
+
+    const LEFT_ALLOWED  = new Set(["1","2","4"]);
+    const RIGHT_ALLOWED = new Set(["6","98","99"]);
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+      const form = document.getElementById('searchForm');
+
+      const emptyState = document.getElementById('emptyState');
+      const tableSection = document.getElementById('tableSection');
+      const tableBody = document.getElementById('tableBody');
+      const totalRowsEl = document.getElementById('totalRows');
+
+      const chkAllLeft = document.getElementById('chkAllLeft');
+      const chkAllRight = document.getElementById('chkAllRight');
+
+      const btnCancel = document.getElementById('btnCancel');
+      const btnResend = document.getElementById('btnResend');
+      const btnExportTop = document.getElementById('btnExportTop');
+
+      const errorBox = document.getElementById('errorBox');
+      const errorText = document.getElementById('errorText');
+
+      // ✅ Bootstrap modal - ทำแบบปลอดภัย: ถ้า bootstrap ไม่มี Search ก็ยังไม่พัง
+      const cancelConfirmModalEl = document.getElementById('cancelConfirmModal');
+      const btnConfirmCancel = document.getElementById('btnConfirmCancel');
+      const hasBootstrap = !!(window.bootstrap && typeof bootstrap.Modal === 'function');
+      const cancelModal = hasBootstrap ? new bootstrap.Modal(cancelConfirmModalEl) : null;
+
+      if (!hasBootstrap) {
+        console.warn('[CustomerList] bootstrap.Modal not found. Please ensure bootstrap.bundle.js is loaded in layout.');
+      }
+
+      function showError(msg){
+        if (!errorBox || !errorText) return;
+        errorText.textContent = msg;
+        errorBox.classList.remove('d-none');
+      }
+
+      function hideError(){
+        if (!errorBox) return;
+        errorBox.classList.add('d-none');
+      }
+
+      function showEmpty(){
+        hideError();
+        tableSection.classList.add('d-none');
+        emptyState.classList.remove('d-none');
+        totalRowsEl.textContent = '0';
+
+        chkAllLeft.checked = false;  chkAllLeft.indeterminate = false;
+        chkAllRight.checked = false; chkAllRight.indeterminate = false;
+
+        chkAllLeft.style.visibility = 'hidden';
+        chkAllRight.style.visibility = 'hidden';
+
+        btnCancel.disabled = true;
+        btnResend.disabled = true;
+        btnExportTop.disabled = true;
+      }
+
+      function showTable(){
+        hideError();
+        emptyState.classList.add('d-none');
+        tableSection.classList.remove('d-none');
+      }
+
+      function formatMoney(n){
+        const num = Number(n || 0);
+        return num.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      }
+
+      function applyBadges(){
+        document.querySelectorAll('.js-job-status').forEach(el => {
+          const s = el.dataset.status || '';
+          const m = STATUS_MAP[s] || {text:s, cls:"bg-light text-dark"};
+          el.textContent = m.text;
+          el.className = `badge job-badge js-job-status ${m.cls}`;
+        });
+      }
+
+      function getVisibleRows(){
+        return Array.from(document.querySelectorAll('#tableBody tr'))
+          .filter(tr => tr.style.display !== 'none');
+      }
+
+      function syncRowHighlight(tr){
+        const leftChk  = tr.querySelector('.row-check-left');
+        const rightChk = tr.querySelector('.row-check-right');
+        const selected = !!(leftChk && leftChk.checked) || !!(rightChk && rightChk.checked);
+        tr.classList.toggle('is-selected', selected);
+      }
+
+      function updateActionButtons(){
+        const leftChecked = Array.from(document.querySelectorAll('.row-check-left')).some(chk => chk.checked);
+        const rightChecked = Array.from(document.querySelectorAll('.row-check-right')).some(chk => chk.checked);
+
+        btnCancel.disabled = !leftChecked;
+        btnResend.disabled = !rightChecked;
+      }
+
+      function updateSelectAllState(which){
+        const visibleRows = getVisibleRows();
+
+        if (which === 'left'){
+          const available = visibleRows.map(tr => tr.querySelector('.row-check-left')).filter(Boolean);
+          chkAllLeft.style.visibility = (available.length > 0) ? 'visible' : 'hidden';
+
+          if (available.length === 0){
+            chkAllLeft.checked = false;
+            chkAllLeft.indeterminate = false;
+            return;
+          }
+          const checkedCount = available.filter(chk => chk.checked).length;
+          chkAllLeft.checked = (checkedCount === available.length);
+          chkAllLeft.indeterminate = (checkedCount > 0 && checkedCount < available.length);
+        }
+
+        if (which === 'right'){
+          const available = visibleRows.map(tr => tr.querySelector('.row-check-right')).filter(Boolean);
+          chkAllRight.style.visibility = (available.length > 0) ? 'visible' : 'hidden';
+
+          if (available.length === 0){
+            chkAllRight.checked = false;
+            chkAllRight.indeterminate = false;
+            return;
+          }
+          const checkedCount = available.filter(chk => chk.checked).length;
+          chkAllRight.checked = (checkedCount === available.length);
+          chkAllRight.indeterminate = (checkedCount > 0 && checkedCount < available.length);
+        }
+      }
+
+      function wireCheckboxes(){
+        document.querySelectorAll('.row-check-left').forEach(chk => {
+          chk.addEventListener('change', () => {
+            const tr = chk.closest('tr');
+            if (tr) syncRowHighlight(tr);
+            updateSelectAllState('left');
+            updateActionButtons();
+          });
+        });
+
+        document.querySelectorAll('.row-check-right').forEach(chk => {
+          chk.addEventListener('change', () => {
+            const tr = chk.closest('tr');
+            if (tr) syncRowHighlight(tr);
+            updateSelectAllState('right');
+            updateActionButtons();
+          });
+        });
+
+        chkAllLeft.addEventListener('change', () => {
+          const checked = chkAllLeft.checked;
+          getVisibleRows().forEach(tr => {
+            const chk = tr.querySelector('.row-check-left');
+            if (!chk) return;
+            chk.checked = checked;
+            syncRowHighlight(tr);
+          });
+          updateSelectAllState('left');
+          updateActionButtons();
+        });
+
+        chkAllRight.addEventListener('change', () => {
+          const checked = chkAllRight.checked;
+          getVisibleRows().forEach(tr => {
+            const chk = tr.querySelector('.row-check-right');
+            if (!chk) return;
+            chk.checked = checked;
+            syncRowHighlight(tr);
+          });
+          updateSelectAllState('right');
+          updateActionButtons();
+        });
+      }
+
+      function renderRows(rows){
+        tableBody.innerHTML = (rows || []).map(r => {
+          const status = String(r.status ?? '');
+          const leftAllowed = LEFT_ALLOWED.has(status);
+          const rightAllowed = RIGHT_ALLOWED.has(status);
+
+          return `
+            <tr>
+              <td class="text-center sticky-col-1">
+                ${leftAllowed ? `<input class="form-check-input row-check-left" type="checkbox">` : ``}
+              </td>
+
+              <td class="fw-semibold sticky-col-2">${r.customerId ?? ''}</td>
+              <td class="sticky-col-3">${r.customerName ?? ''}</td>
+
+              <td><span class="badge job-badge js-job-status" data-status="${status}"></span></td>
+              <td>${r.appointmentDate ?? ''}</td>
+              <td>${r.surveyType ?? ''}</td>
+              <td>${r.clientName ?? ''}</td>
+              <td class="text-end">${formatMoney(r.osBalance)}</td>
+              <td>${r.agreementNo ?? ''}</td>
+
+              <td>${r.createdDate ?? ''}</td>
+              <td>${r.updateDate ?? ''}</td>
+              <td>${r.collectorResult ?? ''}</td>
+              <td>${r.collectorRemark ?? ''}</td>
+
+              <td class="text-center sticky-col-right">
+                ${rightAllowed ? `<input class="form-check-input row-check-right" type="checkbox">` : ``}
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        applyBadges();
+        wireCheckboxes();
+        updateSelectAllState('left');
+        updateSelectAllState('right');
+        updateActionButtons();
+      }
+
+      async function doSearch(){
+        hideError();
+
+        const params = new URLSearchParams();
+        const getV = (id) => (document.getElementById(id)?.value || '').trim();
+        const put = (name, value) => { if (value) params.set(name, value); };
+
+        put('customerId', getV('txtCustomerId'));
+        put('custName', getV('txtCustName'));
+        put('client', getV('ddlClient'));
+        put('agreementNo', getV('txtAgreementNo'));
+        put('address', getV('txtAddress'));
+        put('zipcode', getV('txtZipcode'));
+        put('surveyType', getV('ddlSurveyType'));
+        put('jobStatus', getV('ddlJobStatus'));
+
+        put('createdFrom', getV('dtCreatedFrom'));
+        put('createdTo', getV('dtCreatedTo'));
+        put('updateFrom', getV('dtUpdateFrom'));
+        put('updateTo', getV('dtUpdateTo'));
+
+        const url = `${API_SEARCH_URL}?${params.toString()}`;
+        console.log('[CustomerList] Search URL:', url);
+
+        const res = await fetch(url, { method: 'GET' });
+        if (!res.ok) throw new Error(`Search API error: HTTP ${res.status}`);
+
+        const data = await res.json();
+
+        if (!data || !Array.isArray(data.rows)) {
+          throw new Error('Invalid API response: expected { rows: [], totalRows: n }');
+        }
+
+        const rows = data.rows;
+
+        if (rows.length === 0){
+          tableBody.innerHTML = '';
+          showEmpty();
+          return;
+        }
+
+        renderRows(rows);
+        totalRowsEl.textContent = String(data.totalRows ?? rows.length);
+        showTable();
+        btnExportTop.disabled = false;
+      }
+
+      // ===== Events =====
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        doSearch().catch(err => {
+          console.error(err);
+          showError(String(err.message || err));
+          showEmpty();
+        });
+      });
+
+      document.getElementById('btnReset').addEventListener('click', () => {
+        form.reset();
+        tableBody.innerHTML = '';
+        showEmpty();
+      });
+
+      btnExportTop.addEventListener('click', () => {
+    	  $.confirm({
+  		    title: 'Export',
+  		    content: 'Do you want to Export?',
+  		    icon: 'fa fa-warning',
+  		    closeIcon: true,
+  		    animation: 'scale',
+  		    type: 'blue',
+
+  		    buttons: {
+  		      ok: {
+  		        text: 'Yes',
+  		        btnClass: 'btn-info',
+  		        action: function () {
+  		          // ✅ ทำงานเมื่อกด OK
+  		          // TODO: call cancel API / ใช้ selected rows
+  		          alert('Export confirmed');
+  		        }
+  		      },
+  		      close: {
+  		        text: 'No',
+  		        btnClass: 'btn-light'
+  		      }
+  		    }
+  		  });
+
+    });
+
+      // ✅ Cancel -> Bootstrap confirm modal (ถ้ามี bootstrap)
+btnCancel.addEventListener('click', () => {
+
+  $.confirm({
+    title: 'Cancel',
+    content: 'Do you want to Cancel?',
+    icon: 'fa fa-warning',
+    closeIcon: true,
+    animation: 'scale',
+    type: 'red',
+
+    buttons: {
+      ok: {
+        text: 'Yes',
+        btnClass: 'btn-red',
+        action: function () {
+          // ✅ ทำงานเมื่อกด OK
+          // TODO: call cancel API / ใช้ selected rows
+          alert('Cancel confirmed');
+        }
+      },
+      close: {
+        text: 'No',
+        btnClass: 'btn-light'
+      }
+    }
+  });
+
+});
+
+
+      // ✅ Yes in modal
+      btnConfirmCancel.addEventListener('click', () => {
+        if (cancelModal) cancelModal.hide();
+
+        // TODO: ใส่ logic cancel จริง (call API)
+        alert('Cancel confirmed');
+      });
+
+      btnResend.addEventListener('click', () => {
+    	  $.confirm({
+    		    title: 'Resend',
+    		    content: 'Do you want to Resend?',
+    		    icon: 'fa fa-warning',
+    		    closeIcon: true,
+    		    animation: 'scale',
+    		    type: 'orange',
+
+    		    buttons: {
+    		      ok: {
+    		        text: 'Yes',
+    		        btnClass: 'btn-warning',
+    		        action: function () {
+    		          // ✅ ทำงานเมื่อกด OK
+    		          // TODO: call cancel API / ใช้ selected rows
+    		          alert('Resend confirmed');
+    		        }
+    		      },
+    		      close: {
+    		        text: 'No',
+    		        btnClass: 'btn-light'
+    		      }
+    		    }
+    		  });
+
+      });
+
+      // initial
+      showEmpty();
+    });
+  </script>
+
+</div>
